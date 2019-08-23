@@ -1,23 +1,37 @@
 const nodemailer = require("nodemailer");
+const smtpTransport = require("nodemailer-smtp-transport");
+/**
+ *  **Servidor SMTP Docker**
+ * const transport = nodemailer.createTransport({
+ * host: process.env.MAILHOG_HOST,
+ * port: "1025",
+ * auth: null
+ * });
+ */
 
-const transporter = nodemailer.createTransport({
-  serviço: "gmail",
-  auth: {
-    user: "seuusuario@gmail.com",
-    pass: "seupassword"
+/**
+ *  **Servidor SMTP remoto gmail**
+ */
+const transporter = nodemailer.createTransport(
+  smtpTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    auth: {
+      user: "seuemail@gmail.com",
+      pass: "suasenha"
+    }
+  })
+);
+const mailOptions = {
+  from: "autordoemail@gmail.com",
+  to: "quemvaireceber@gmail.com",
+  subject: "Funcionou!!",
+  text: "Esse e-mail foi enviado por um robô!!."
+};
+transporter.sendMail(mailOptions, function(error, info) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email enviado: " + info.response);
   }
 });
-
-const mailOptions = {
-  from: "sender@email.com", // endereço do remetente
-  to: "to@email.com", // lista de receptores
-  subject: "Subject of your email", // Subject line
-  html: "<p>Your html here</p>" // corpo de texto simples
-};
-
-transporter.sendMail(mailOptions, function(err, info) {
-  if (err) console.log(err);
-  else console.log(info);
-});
-
-/*Fontes: https://codeburst.io/sending-an-email-using-nodemailer-gmail-7cfa0712a799*/
